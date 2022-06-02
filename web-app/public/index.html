@@ -2,27 +2,133 @@
 <html>
   <head>
     <link rel="stylesheet" type="text/css" href="css/plant_saturation.css">
+    <!--Script to Graph Data below-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Hour', 'Moisture'],
+          ['0',  45],
+          ['1',  60],
+          ['2',  30],
+          ['3',  60],
+          ['4',  60],
+          ['5',  45],
+          ['7',  43],
+          ['8',  34],
+          ['9',  49],
+          ['10',  53],
+          ['11',  47],
+          ['12',  40]
+        ]);
+
+        var options = {
+          title: 'Plant Saturation',
+          hAxis: {title: 'Hour',  titleTextStyle: {color: 'black'}},
+          vAxis: {minValue: 0},
+          backgroundColor: '#353535'
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+      </script>
   </head>
   <body>
-    <h1>Bio::Neos Plant Monitor</h1>
-    <div class="bar_container" height="100%" width="100%" style="background: #552200;">
-      <div id="main_container">
-        <div id="pbar" class="progress-pie-chart" data-percent="0">
-          <div class="ppc-progress">
-            <div class="ppc-progress-fill"></div>
-          </div>
-          <div class="ppc-percents">
-            <div class="pcc-percents-wrapper">
-              <img src="img/transparent_leaves_1.png" height="174.91304px" width="174.91304px">
+    <header>
+      <h1 style="font-size: 40px"><img src="img/BNlogo2.png" style="vertical-align:middle" height="174.91304px" width="250px"><font color="white"> Bio::Neos Plant Monitor</font></h1>
+    </header>
+    <main>
+      <h2>Add Plant</h2>
+      <div>
+        <form>
+          <label>Name: <input type="text" id="name" placeholder="Insert Plant Name.."></label>
+          <label>Location: <input type="text" id="location" placeholder="Insert Location.."></label>
+          <label>ID: <input type="text" id="id" placeholder="Enter ID.."></label>
+          <label for="file-select">Upload Image:</label>
+          <input type="file" name="upload" id="file-select">
+          <input type="button" value="Submit" id="btn">
+        </form>
+      </div>
+      <div id="div-container" class="container">
+        <!--COMMENT OUT
+        <div class="plant-list">
+          <div class="card">
+            <img src="img/plant1.jpg" style="vertical-align:middle" height="300px" width="250px">
+            <div class="plant-details">
+              <div class="name">Name: </div>
+              <div class="location">Location: </div>
+              <div class="id">ID: </div>
+            </div>
+            <div class="skill">
+              <div class="outer">
+                <div class="inner">
+                  <div id="number">
+                    
+                  </div>
+                </div>
+              </div>
+
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
+                <defs>
+                   <linearGradient id="GradientColor">
+                      <stop offset="0%" stop-color="#e91e63" />
+                      <stop offset="100%" stop-color="#673ab7" />
+                   </linearGradient>
+                </defs>
+                <circle cx="80" cy="80" r="70" stroke-linecap="round" />
+        </svg>
+            </div>
+            <div class="div-remove-card">
+              <button class="remove-card">X</button>
             </div>
           </div>
         </div>
-
-        <progress style="display: none" id="progress_bar" value="0" max="100"></progress>
+      -->
       </div>
-    </div>
+    </main>
+    <!--COMMENT OUT-->
+    <script>
+      //Script for hydration bar
+      let number = document.getElementById("number");
+      let counter = 0;
+      setInterval(() => {
+        if(counter == 65){
+          clearInterval();
+        }else{
+          counter += 1;
+          number.innerHTML = counter + "%"
+        }
+      }, 30);
+    </script>
+    <!---->
+    <script src="js/buttons.js"></script>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/rainbowvis.js"></script>
     <script src="js/plant_saturation.js"></script>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAmMUMHrJcsD8WPnLLS4SF32Fdks5o_BgI",
+        authDomain: "bioneos.firebaseapp.com",
+        projectId: "bioneos",
+        storageBucket: "bioneos.appspot.com",
+        messagingSenderId: "556458129768",
+        appId: "1:556458129768:web:7aad82deab5c315cab3edd"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+    </script>
+    <script src='js/index.js'></script>
   </body>
 </html>
