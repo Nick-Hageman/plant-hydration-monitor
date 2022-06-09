@@ -49,7 +49,6 @@
         <form>
           <label>Name: <input type="text" id="name" placeholder="Insert Plant Name.."></label>
           <label>Location: <input type="text" id="location" placeholder="Insert Location.."></label>
-          <label>ID: <input type="text" id="id" placeholder="Enter ID.."></label>
           <label for="file-select">Upload Image:</label>
           <input type="file" name="upload" id="file-select">
           <input type="button" value="Submit" id="btn">
@@ -137,13 +136,11 @@
       btn.addEventListener("click", (e) =>{
         var name = document.getElementById('name').value;
         var location = document.getElementById('location').value;
-        var id = document.getElementById('id').value;
         var img = document.getElementById('file-select').files[0].name;
 
         const userId = push(child(ref(database), 'plants')).key;
 
         set(ref(database, 'plants/' + userId), {
-          id: id,
           location: location,
           name: name,
           img: img
