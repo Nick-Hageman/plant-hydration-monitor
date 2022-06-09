@@ -187,14 +187,15 @@ onValue(nameRef, (snapshot) => {
 
     document.querySelector('#remove-card-' + i)
     .addEventListener('click', function(){
-        let confrm = confirm('Do you really want to remove this plant?')
+        let confrm = confirm('Do you really want to remove this plant from the Database?')
         let removeEl = this.parentNode.parentNode;
-        if(confrm)
+        if(confrm) {
             div.removeChild(removeEl);
             //Returns the id of the specific sensor to delete it from firebase
             //console.log(removeEl.children[1].children[2].textContent.split('ID: ').pop());
             let idno = removeEl.children[1].children[2].textContent.split('ID: ').pop();
             remove(ref(database, 'plants/'+idno));
+        };
     })
     i++;
 
