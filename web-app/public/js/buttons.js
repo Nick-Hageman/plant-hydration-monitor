@@ -1,3 +1,12 @@
+let moisture;
+//TESTING
+fetch('http://192.168.86.56:3000/saturation')
+.then(response => response.json())
+.then(data => {
+  console.log(data) // Prints result from `response.json()` in getRequest
+  moisture = String(((data.value / 1023) * 100).toFixed(0)) + "%";
+})
+.catch(error => console.error(error))
 
 //New div attempt
 // Create div and add to webpage
@@ -7,17 +16,18 @@ let containerDiv = document.querySelector('.container');
 containerDiv.appendChild(div);
 
 // Add event listener
-let submitBtn = document.getElementById('btn');
-submitBtn.addEventListener('click', displayPlantDetail);
+//let submitBtn = document.getElementById('btn');
+//submitBtn.addEventListener('click', displayPlantDetail);
 
 let i = 0;
-
+/*
 // create function
 function displayPlantDetail() {
     //collect data from form
     let name = document.getElementById('name').value;
     let location = document.getElementById('location').value;
     let id = document.getElementById('id').value;
+    //let moisture = getData();
     let img = document.getElementById('file-select').files[0].name;
     let html = `<div class="card">
                         <img src="img/${img}" style="vertical-align:middle" height="300px" width="250px">
@@ -25,6 +35,7 @@ function displayPlantDetail() {
                             <div class="name">Name: ${name}</div>
                             <div class="location">Location: ${location}</div>
                             <div class="id">ID: ${id}</div>
+                            <div class="moisture">Moisture: ${moisture}</div>
                             </div>
                             <div class="skill">
                               <div class="outer">
@@ -75,4 +86,4 @@ function displayPlantDetail() {
     i++;
 
 }
-
+*/

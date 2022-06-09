@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--DELETE-->
+    
     <link rel="stylesheet" type="text/css" href="css/plant_saturation.css">
     <!--Script to Graph Data below-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -55,7 +57,7 @@
         </form>
       </div>
       <div id="div-container" class="container">
-        <!--COMMENT OUT
+        <!--COMMENT OUT (This is for testing HTML)>
         <div class="plant-list">
           <div class="card">
             <img src="img/plant1.jpg" style="vertical-align:middle" height="300px" width="250px">
@@ -63,6 +65,7 @@
               <div class="name">Name: </div>
               <div class="location">Location: </div>
               <div class="id">ID: </div>
+              <div class="moisture">Moisture: </div>
             </div>
             <div class="skill">
               <div class="outer">
@@ -88,10 +91,10 @@
             </div>
           </div>
         </div>
-      -->
+      <-->
       </div>
     </main>
-    <!--COMMENT OUT-->
+    <!--COMMENT OUT>
     <script>
       //Script for hydration bar
       let number = document.getElementById("number");
@@ -105,29 +108,99 @@
         }
       }, 30);
     </script>
-    <!---->
+    <-->
     <script src="js/buttons.js"></script>
+    <script src="js/fetch.js"></script>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/rainbowvis.js"></script>
     <script src="js/plant_saturation.js"></script>
     <script type="module">
-      // Import the functions you need from the SDKs you need
+      //Import
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
-    
+      import { getDatabase, set, ref, push, child, onValue } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+
       // Your web app's Firebase configuration
-      const firebaseConfig = {
+      var firebaseConfig = {
         apiKey: "AIzaSyAmMUMHrJcsD8WPnLLS4SF32Fdks5o_BgI",
         authDomain: "bioneos.firebaseapp.com",
+        databaseURL: "https://bioneos-default-rtdb.firebaseio.com",
         projectId: "bioneos",
         storageBucket: "bioneos.appspot.com",
         messagingSenderId: "556458129768",
         appId: "1:556458129768:web:7aad82deab5c315cab3edd"
       };
-    
+
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
+      // Get a reference to the database service
+      const database = getDatabase(app);
+
+      btn.addEventListener("click", (e) =>{
+        var name = document.getElementById('name').value;
+        var location = document.getElementById('location').value;
+        var id = document.getElementById('id').value;
+        var img = document.getElementById('file-select').files[0].name;
+
+        const userId = push(child(ref(database), 'plants')).key;
+
+        set(ref(database, 'plants/' + userId), {
+          id: id,
+          location: location,
+          name: name,
+          img: img
+        });
+        alert("Added Plant to Database");
+      });
+
+  //MORE TESTING
+  //Iterate through 
+  //  - connect sensor to plants (using id input)
+  //  - display on screen
+//const nameRef = ref(database, 'plants/' + '-N3vinSUZGPXaZg-Spfl' + '/name');
+let i = 0;
+const nameRef = ref(database, 'plants/');
+onValue(nameRef, (snapshot) => {
+  const data = snapshot.val();
+  for (let x in data) {
+    console.log(x + ": " + data[x].name);
+    
+    //Plant Attributes
+    let name =  data[x].name
+    let location =  data[x].location
+    let id =  x //Users need to put this in their arduino program to send the sensor readings to this specific plant
+    let img =  data[x].img
+    let moisture =  data[x].sensorVal
+
+    let html = `<div class="card">
+                        <img src="img/${img}" style="vertical-align:middle" height="300px" width="250px">
+                        <div class="plant-details">
+                            <div class="name">Name: ${name}</div>
+                            <div class="location">Location: ${location}</div>
+                            <div class="id">ID: ${id}</div>
+                            <div class="moisture">Moisture: ${moisture}</div>
+                            </div>
+                        <div class="div-remove-card">
+                            <button class="remove-card" id="remove-card-${i}">X</button>
+                        </div>
+                    </div>`;
+    
+    div.insertAdjacentHTML("beforeend", html);
+
+    document.querySelector('#remove-card-' + i)
+    .addEventListener('click', function(){
+        let confrm = confirm('Do you really want to remove this plant?')
+        let removeEl = this.parentNode.parentNode;
+        if(confrm)
+            div.removeChild(removeEl)
+    })
+    i++;
+
+
+  }
+}, {
+  onlyOnce: true
+});
+
     </script>
     <script src='js/index.js'></script>
   </body>
