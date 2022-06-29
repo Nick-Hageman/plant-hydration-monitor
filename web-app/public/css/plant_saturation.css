@@ -113,7 +113,6 @@ input[type=file]::-webkit-file-upload-button {
 .plant-details{
   border:none;
   margin: 0px 10px;
-  width: 55%;
 }
 
 .name {
@@ -143,6 +142,8 @@ input[type=file]::-webkit-file-upload-button {
 .div-remove-card {
   border: none;
   margin-top:-15px;
+  margin-right:-15px;
+  width:20px;
 }
 
 .remove-card {
@@ -154,146 +155,4 @@ input[type=file]::-webkit-file-upload-button {
   font-weight: bold;
   top: 0;
   right: 0;
-}
-
-
-
-
-
-
-/* ------------------------Progress Bar--------------- */
-.skill {
-  width:160px;
-  top: 40px;
-  height:160px;
-  position: relative;
-  border:none;
-}
-
-.outer {
-  height: 160px;
-  width: 160px;
-  border-radius: 50%;
-  position:absolute;
-  top:0;
-  left:0;
-  padding: 20px;
-  box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.15),
-              -6px -6px 10px -1px rgba(255,255,255,0.7);
-}
-
-.inner {
-  height:120px;
-  width: 120px;
-  border-radius: 50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow: inset 4px 4px 6px -1px rgba(0, 0, 0, 0.2),
-              inset -4px -4px 6px -1px rgba(255,255,255,0.7),
-              -.5px  -.5px 0px rgba(255,255,255,1),
-              .5px  .5px 0px rgba(255,255,255,0.7),
-              0px 12px 10px -10px rgba(0, 0, 0, 0.05);
-}
-
-#number {
-  font-weight:600;
-  border:none;
-  color:white;
-}
-
-circle {
-  fill:none;
-  stroke: url(#GradientColor);
-  stroke-width: 20px;
-  stroke-dasharray: 472;
-  stroke-dashoffset: 472;
-  animation: anim 2s linear forwards;
-}
-svg {
-  position:absolute;
-  top:0;
-  left:0;
-}
-
-@keyframes anim {
-  100%{
-    /* Need to match this with the actual moisture percentage */
-    stroke-dashoffset: 165;
-  }
-}
-
-
-/* GRAPHING */
-
-
-
-
-
-
-/* Pie Chart */
-.progress-pie-chart {
-width:200px;
-height: 200px;
-border-radius: 50%;
-background-color: #686868;
-position: relative;
-}
-.progress-pie-chart.gt-50 {
-background-color: #001dff;
-}
-
-.ppc-progress {
-content: "";
-position: absolute;
-border-radius: 50%;
-left: calc(50% - 100px);
-top: calc(50% - 100px);
-width: 200px;
-height: 200px;
-clip: rect(0, 200px, 200px, 100px);
-}
-.ppc-progress .ppc-progress-fill {
-content: "";
-position: absolute;
-border-radius: 50%;
-left: calc(50% - 100px);
-top: calc(50% - 100px);
-width: 200px;
-height: 200px;
-clip: rect(0, 100px, 200px, 0);
-background: #0a8f46;
-transform: rotate(60deg);
-}
-.gt-50 .ppc-progress {
-clip: rect(0, 100px, 200px, 0);
-}
- gt-50 .ppc-progress .ppc-progress-fill {
-clip: rect(0, 200px, 200px, 100px);
-background: #552200;
-}
-  
-.ppc-percents {
-content: "";
-position: absolute;
-border-radius: 50%;
-left: calc(50% - 173.91304px/2);
-top: calc(50% - 173.91304px/2);
-max-width: 173.91304px;
-max-height: 173.91304px;
-background: #4d5e0b;
-text-align: center;
-display: table;
-border: #552200;
-}
-  
-.pcc-percents-wrapper {
-  max-height:173.91304px;
-  max-width:173.91304px;
-  vertical-align: middle;
-  text-align:center;
-}
-
-.progress-pie-chart {
-margin: 50px auto 0;
 }

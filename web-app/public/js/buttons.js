@@ -1,9 +1,9 @@
-let moisture;
+let moisture, dataset;
 //TESTING
-fetch('http://192.168.86.56:3000/saturation')
+fetch('http://192.168.86.70:3000/saturation')
 .then(response => response.json())
 .then(data => {
-  console.log(data) // Prints result from `response.json()` in getRequest
+  dataset = (data.dict[data.macAddress]) // Prints result from `response.json()` in getRequest
   moisture = String(((data.value / 1023) * 100).toFixed(0)) + "%";
 })
 .catch(error => console.error(error))
