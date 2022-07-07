@@ -1,7 +1,8 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../app.js");
 
-const Moisture = sequelize.define("moisture", {
+
+Moisture = sequelize.define("moisture", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,

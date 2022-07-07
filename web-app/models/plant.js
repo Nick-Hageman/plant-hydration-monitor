@@ -7,7 +7,7 @@ const { Sequelize } = require("sequelize");
 */
 const sequelize = require('../app.js')
 
-const Plant = sequelize.define("plant", {
+Plant = sequelize.define("plant", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -23,10 +23,6 @@ const Plant = sequelize.define("plant", {
     allowNull: false,
   },
   MAC: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  moisture: {
     type: Sequelize.STRING,
     allowNull: false,
   },

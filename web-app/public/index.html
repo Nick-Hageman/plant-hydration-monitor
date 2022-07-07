@@ -3,6 +3,7 @@
   <head>
     <!--DELETE-->
     <link rel="stylesheet" type="text/css" href="css/plant_saturation.css">
+    <link rel="icon" type="image/x-icon" href="../img/icon.PNG">
     <!--SCRIPT TO GRAPH DATA-->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
@@ -40,7 +41,7 @@
 
               //Function to retrive current readings from sensor
               function getvals(){
-                return fetch('http://192.168.86.70:3000/saturation',
+                return fetch('http://192.168.86.82:3000/data',
                 {
                   method: "GET",
                   headers: {
@@ -51,7 +52,7 @@
                 .then((response) => response.json())
                 .then((responseData) => {
                   //console.log(responseData.dict[responseData.macAddress]);
-                  return responseData.dict[responseData.macAddress];
+                  return responseData.PLANTS[0][4];
                 })
                 .catch(error => console.warn(error));
               }
@@ -59,6 +60,7 @@
         
               function updateChart() {
               getvals().then(values => {
+                //console.log(values);
               const labels = [
                 '11',
                 '10',
@@ -75,7 +77,6 @@
               ];
         
               const data = {
-                labels: labels,
                 datasets: [{
                   label: 'Soil Moisture %',
                   backgroundColor: 'rgb(18, 151, 139)',
@@ -109,6 +110,7 @@
                 data: data,
                 options: {scales: {
               x: {
+                //min: new Date(),
                 title: {
                   color: 'gray',
                   display: true,
@@ -161,14 +163,13 @@
     <script src="js/plant_saturation.js"></script>
     <script src='js/index.js'></script>
     <script src='js/plant.js'></script>
-    <script src='./util/index.js'></script>
     <script type="module">
       //Import
 
       btn.addEventListener("click", (e) =>{
         var name = document.getElementById('name').value;
         var location = document.getElementById('location').value;
-        var img = document.getElementById('file-select').files[0].name;
+        //var img = document.getElementById('file-select').files[0].name;
 
         alert("Added Plant to Database");
       });
@@ -178,7 +179,7 @@
   //  - connect sensor to plants (using id input)
   //  - display on screen
   function getvals(){
-    return fetch('http://192.168.86.70:3000/data',
+    return fetch('http://192.168.86.82:3000/data',
     {
       method: "GET",
       headers: {
@@ -189,8 +190,8 @@
     .then((response) => response.json())
     .then((responseData) => {
       //console.log(responseData.dict[responseData.macAddress]);
-      console.log(responseData);
-      return responseData;
+      //console.log('test',responseData.PLANTS);
+      return responseData.PLANTS;
     })
     .catch(error => console.warn(error));
   }
@@ -199,14 +200,14 @@
   function updateDiv() {
   getvals().then(data => {
     let i = 0;
-    for (let x in data.dict) {
-    console.log(x);
+    for (let x in data) {
+    console.log(data[x]);
     //Plant Attributes
-    let name =  'name';
-    let location =  'name';
-    let id =  x; //Users need to put this in their arduino program to send the sensor readings to this specific plant
+    let name =  data[x][1];
+    let location =  data[x][2];
+    let id =  data[x][0]; //Users need to put this in their arduino program to send the sensor readings to this specific plant
     let img =  "../img/plant1.jpg";
-    let moisture =  data.dict[x][data.dict[x].length-1]; //Get's the most recent reading
+    let moisture =  data[x][4][data[x][4].length-1].y; //Get's the most recent reading
 
     let html = `<div class="card">
                         <img src="img/${img}" style="vertical-align:middle" height="300px" width="250px">
@@ -225,11 +226,12 @@
                     </div>`;
     
     div.insertAdjacentHTML("beforeend", html);
+    function updateScript() {
     var script = document.createElement('script');
     script.innerHTML = `
 //Function to retrive current readings from sensor
 function getvals(){
-  return fetch('http://192.168.86.70:3000/data',
+  return fetch('http://192.168.86.82:3000/data',
   {
     method: "GET",
     headers: {
@@ -240,7 +242,7 @@ function getvals(){
   .then((response) => response.json())
   .then((responseData) => {
     //console.log(responseData.dict[responseData.macAddress]);
-    return responseData.dict; //Change []
+    return responseData.PLANTS[${x}][4]; //Change []
   })
   .catch(error => console.warn(error));
 }
@@ -264,16 +266,14 @@ const labels = [
 ];
 
 const data = {
-  labels: labels,
   datasets: [{
     label: 'Soil Moisture %',
     backgroundColor: 'rgb(18, 151, 139)',
     borderColor: 'rgb(12, 104, 96)',
-    data: values['${x}'], //OLD -> [${data.dict[x]}]
+    data: values,
   }]
 };
 
-//console.log(values['${x}']);
 //Red Zone bg color (Optional chart plugins)
 const backgroundChartArea = {
   id: 'backgroundChartArea',
@@ -335,19 +335,31 @@ myChart${i}.update();
 })
 }
 updateChart();
-setInterval(updateChart, 20000);`;
+//setInterval(updateChart, 20000);`;
+
     //let div_i = document.getElementById('myChart'+String(i));
     document.body.appendChild(script);
-    console.log(data.dict[x]);
-    
+}
+updateScript();
+//setInterval(updateScript, 3000);
     document.querySelector('#remove-card-' + i)
     .addEventListener('click', function(){
         let confrm = confirm('Do you really want to remove this plant from the Database?')
-        //Xlet removeEl = this.parentNode.parentNode;
+        let removeEl = this.parentNode.parentNode;
         if(confrm) {
             //Xdiv.removeChild(removeEl);
-            //Returns the id of the specific sensor to delete it from firebase
-            //console.log(removeEl.children[1].children[2].textContent.split('ID: ').pop());
+            //Remove plant from Database
+            id = (removeEl.children[1].children[2].textContent.split('ID: '));
+            fetch('http://192.168.86.82:3000/removePlant', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              id: id
+            })
+          });
             //Xlet idno = removeEl.children[1].children[2].textContent.split('ID: ').pop();
         };
     })

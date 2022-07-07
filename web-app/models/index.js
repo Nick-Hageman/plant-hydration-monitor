@@ -1,14 +1,12 @@
-//const Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 const sequelize = require('../app.js')
 const Plant = require("./plant.js");
 const Moisture = require("./moisture");
 const fetch = require('node-fetch');
 
-Plant.hasMany(Moisture);
-
 /*
 //Try to update values LIVE vvvv
-const api_url = 'http://192.168.86.70:3000/saturation';
+const api_url = 'http://192.168.86.82:3000/saturation';
 let firstTime = true;
 async function getInfo() {
   const response = await fetch(api_url);
@@ -34,7 +32,7 @@ async function getValue() {
 let moisture;
 let mac;
 //TESTING
-fetch('http://192.168.86.70:3000/saturation')
+fetch('http://192.168.86.82:3000/saturation')
 .then(response => response.json())
 .then(data => {
   console.log(data) // Prints result from `response.json()` in getRequest
@@ -47,37 +45,54 @@ fetch('http://192.168.86.70:3000/saturation')
 
 
 //ORIGINAL FUCTION
+// 1 to many relationship
+Plant.hasMany(Moisture, {
+  foreignKey: 'plantId',
+  as: 'moisture',
+  onDelete: 'cascade',
+  hooks: true,
+});
+Moisture.belongsTo(Plant, {
+  foreignKey: 'plantId',
+  as: 'plant'
+});
+
 /*
 let plantId = null;
 sequelize
   //.sync({force: true})
   .sync()
   .then((result) => {
-    return Plant.create({name: "plant1", location: "kitchen", MAC: mac, moisture: moisture});
+    return Plant.create({name: "plant1", location: "kitchen", MAC: mac});
     console.log(result);
   })
   .then(plant => {
     plantId = plant.id;
-    console.log("First plant Created: ",plant);
+    console.log("First plant Created: ",plant.toJSON());
     return plant.createMoisture({moisture: 500}); //createOrder?
   })
   .then(moisture => {
-    console.log("Moisture is : ",moisture);
+    console.log("Moisture is : ",moisture.toJSON());
     return Moisture.findAll({ where: plantId});
   })
   .then(moistures => {
-    console.log("All the mositure recordings are : ",moistures);
+    console.log("All the mositure recordings are : ",moistures.toJSON());
   })
   .catch((err) => {
     console.log(err);
   });
 */
 
-
-
+// 1. create plant
+const addPlant = async (req, res) => {
+  let info = {name: "plant1", location: "kitchen", MAC: mac}
+  const plant = await Plant.create(info)
+  console.log(plant)
+}
+//addPlant();
 
 function createEntry() {
-  fetch('http://192.168.86.70:3000/saturation')
+  fetch('http://192.168.86.82:3000/saturation')
   .then(response => response.json())
   .then(data => {
     console.log(data) // Prints result from `response.json()` in getRequest
@@ -101,7 +116,7 @@ function createEntry() {
 
 
 async function moistureUpdate() {
-  fetch('http://192.168.86.70:3000/saturation')
+  fetch('http://192.168.86.82:3000/saturation')
   .then(response => response.json())
   .then(data => {
     console.log(data) // Prints result from `response.json()` in getRequest
@@ -185,5 +200,4 @@ async function accessDB2() {
     }}
     console.log(dict);
 }
-
 //accessDB2();
