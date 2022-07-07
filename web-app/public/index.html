@@ -1,43 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!--DELETE-->
     <link rel="stylesheet" type="text/css" href="css/plant_saturation.css">
     <link rel="icon" type="image/x-icon" href="../img/icon.PNG">
-    <!--Script to Graph Data below-->
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Hour', 'Moisture'],
-          ['0',  45],
-          ['1',  60],
-          ['2',  30],
-          ['3',  60],
-          ['4',  60],
-          ['5',  45],
-          ['7',  43],
-          ['8',  34],
-          ['9',  49],
-          ['10',  53],
-          ['11',  47],
-          ['12',  40]
-        ]);
-
-        var options = {
-          title: 'Plant Saturation',
-          hAxis: {title: 'Hour',  titleTextStyle: {color: 'black'}},
-          vAxis: {minValue: 0},
-          backgroundColor: '#353535'
-        };
-
-        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-      </script>
+    <!--SCRIPT TO GRAPH DATA-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header>
@@ -49,87 +17,228 @@
         <form>
           <label>Name: <input type="text" id="name" placeholder="Insert Plant Name.."></label>
           <label>Location: <input type="text" id="location" placeholder="Insert Location.."></label>
-          <label>ID: <input type="text" id="id" placeholder="Enter ID.."></label>
+          <label>MAC: <input type="text" id="id" placeholder="Enter ID.."></label>
           <label for="file-select">Upload Image:</label>
           <input type="file" name="upload" id="file-select">
           <input type="button" value="Submit" id="btn">
         </form>
       </div>
       <div id="div-container" class="container">
-        <!--COMMENT OUT
-        <div class="plant-list">
-          <div class="card">
-            <img src="img/plant1.jpg" style="vertical-align:middle" height="300px" width="250px">
-            <div class="plant-details">
-              <div class="name">Name: </div>
-              <div class="location">Location: </div>
-              <div class="id">ID: </div>
-            </div>
-            <div class="skill">
-              <div class="outer">
-                <div class="inner">
-                  <div id="number">
-                    
-                  </div>
-                </div>
-              </div>
-
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="160px" height="160px">
-                <defs>
-                   <linearGradient id="GradientColor">
-                      <stop offset="0%" stop-color="#e91e63" />
-                      <stop offset="100%" stop-color="#673ab7" />
-                   </linearGradient>
-                </defs>
-                <circle cx="80" cy="80" r="70" stroke-linecap="round" />
-        </svg>
-            </div>
-            <div class="div-remove-card">
-              <button class="remove-card">X</button>
-            </div>
-          </div>
-        </div>
-      -->
       </div>
     </main>
-    <!--COMMENT OUT-->
-    <script>
-      //Script for hydration bar
-      let number = document.getElementById("number");
-      let counter = 0;
-      setInterval(() => {
-        if(counter == 65){
-          clearInterval();
-        }else{
-          counter += 1;
-          number.innerHTML = counter + "%"
-        }
-      }, 30);
-    </script>
-    <!---->
     <script src="js/buttons.js"></script>
     <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/rainbowvis.js"></script>
     <script src="js/plant_saturation.js"></script>
     <script type="module">
-      // Import the functions you need from the SDKs you need
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
-      // TODO: Add SDKs for Firebase products that you want to use
-      // https://firebase.google.com/docs/web/setup#available-libraries
+      //Import
+
+      btn.addEventListener("click", (e) =>{
+        var name = document.getElementById('name').value;
+        var location = document.getElementById('location').value;
+        //var img = document.getElementById('file-select').files[0].name;
+
+        alert("Added Plant to Database");
+      });
+
+  //MORE TESTING
+  //Iterate through 
+  //  - connect sensor to plants (using id input)
+  //  - display on screen
+  function getvals(){
+    return fetch('http://192.168.86.82:3000/data',
+    {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      //console.log(responseData.dict[responseData.macAddress]);
+      //console.log('test',responseData.PLANTS);
+      return responseData.PLANTS;
+    })
+    .catch(error => console.warn(error));
+  }
+  getvals();
+
+  function updateDiv() {
+  getvals().then(data => {
+    let i = 0;
+    for (let x in data) {
+    console.log(data[x]);
+    //Plant Attributes
+    let name =  data[x][1];
+    let location =  data[x][2];
+    let id =  data[x][0]; //Users need to put this in their arduino program to send the sensor readings to this specific plant
+    let img =  "../img/plant1.jpg";
+    let moisture =  data[x][4][data[x][4].length-1].y; //Get's the most recent reading
+
+    let html = `<div class="card">
+                        <img src="img/${img}" style="vertical-align:middle" height="300px" width="250px">
+                        <div class="plant-details">
+                            <div class="name">Name: ${name}</div>
+                            <div class="location">Location: ${location}</div>
+                            <div class="id">ID: ${id}</div>
+                            <div class="moisture" id="moist">Moisture: ${moisture}</div>
+                            </div>
+                            <div height="40px">
+              <canvas id="myChart${i}" width="100%" height="40px"></canvas>
+            </div>
+                        <div class="div-remove-card">
+                            <button class="remove-card" id="remove-card-${i}">X</button>
+                        </div>
+                    </div>`;
     
-      // Your web app's Firebase configuration
-      const firebaseConfig = {
-        apiKey: "AIzaSyAmMUMHrJcsD8WPnLLS4SF32Fdks5o_BgI",
-        authDomain: "bioneos.firebaseapp.com",
-        projectId: "bioneos",
-        storageBucket: "bioneos.appspot.com",
-        messagingSenderId: "556458129768",
-        appId: "1:556458129768:web:7aad82deab5c315cab3edd"
-      };
-    
-      // Initialize Firebase
-      const app = initializeApp(firebaseConfig);
+    div.insertAdjacentHTML("beforeend", html);
+    function updateScript() {
+    var script = document.createElement('script');
+    script.innerHTML = `
+//Function to retrive current readings from sensor
+function getvals(){
+  return fetch('http://192.168.86.82:3000/data',
+  {
+    method: "GET",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+  })
+  .then((response) => response.json())
+  .then((responseData) => {
+    //console.log(responseData.dict[responseData.macAddress]);
+    return responseData.PLANTS[${x}][4]; //Change []
+  })
+  .catch(error => console.warn(error));
+}
+//getvals();
+
+function updateChart() {
+getvals().then(values => {
+const labels = [
+  '11',
+  '10',
+  '9',
+  '8',
+  '7',
+  '6',
+  '5',
+  '4',
+  '3',
+  '2',
+  '1',
+  '0',
+];
+
+const data = {
+  datasets: [{
+    label: 'Soil Moisture %',
+    backgroundColor: 'rgb(18, 151, 139)',
+    borderColor: 'rgb(12, 104, 96)',
+    data: values,
+  }]
+};
+
+//Red Zone bg color (Optional chart plugins)
+const backgroundChartArea = {
+  id: 'backgroundChartArea',
+  beforeDatasetsDraw(chart,args,options) {
+    const {ctx, chartArea: { top, bottom, left, right, width, height},
+      scales: {x, y} } = chart;
+    ctx.fillStyle = 'rgba(255,70,60,0.8)';
+    ctx.fillRect(left,bottom,width,-0.4*height)
+  }
+}
+//Adds Green Zone
+const backgroundChartArea2 = {
+  id: 'backgroundChartArea2',
+  beforeDatasetsDraw(chart,args,options) {
+    const {ctx, chartArea: { top, bottom, left, right, width, height},
+      scales: {x, y} } = chart;
+    ctx.fillStyle = 'rgba(0,203,47,0.8)';
+    ctx.fillRect(left,top,width,0.6*height)
+  }
+}
+
+const config = {
+  type: 'line',
+  data: data,
+  options: {scales: {
+x: {
+  title: {
+    color: 'gray',
+    display: true,
+    text: 'Hours Ago'
+  },
+  ticks: {
+    color: 'white',
+  }
+},
+y: {
+          suggestedMin: 0,
+          suggestedMax: 100,
+          grid: {
+            tickColor: ['red', 'red','red','red','lime','lime','lime','lime','lime','lime','lime']
+          },
+          ticks: {
+            color: 'gray',
+          }
+      }
+}},
+//plugins: [backgroundChartArea, backgroundChartArea2]
+};
+//setInterval(function () {
+  if (Chart.getChart("myChart${i}")){
+    Chart.getChart("myChart${i}").destroy();
+  }
+const myChart${i} = new Chart(
+            document.getElementById('myChart${i}'),
+            config
+          );
+myChart${i}.update();
+//}, 5000);
+})
+}
+updateChart();
+//setInterval(updateChart, 20000);`;
+
+    //let div_i = document.getElementById('myChart'+String(i));
+    document.body.appendChild(script);
+}
+updateScript();
+//setInterval(updateScript, 3000);
+    document.querySelector('#remove-card-' + i)
+    .addEventListener('click', function(){
+        let confrm = confirm('Do you really want to remove this plant from the Database?')
+        let removeEl = this.parentNode.parentNode;
+        if(confrm) {
+            //Xdiv.removeChild(removeEl);
+            //Remove plant from Database
+            id = (removeEl.children[1].children[2].textContent.split('ID: '));
+            fetch('http://192.168.86.82:3000/removePlant', {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              id: id
+            })
+          });
+            //Xlet idno = removeEl.children[1].children[2].textContent.split('ID: ').pop();
+        };
+    })
+    i++;
+
+
+  }
+}, {
+  onlyOnce: true
+});
+}
+updateDiv();
     </script>
-    <script src='js/index.js'></script>
   </body>
 </html>
