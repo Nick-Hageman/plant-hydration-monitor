@@ -3,6 +3,7 @@ const express = require('express'),
 const Plant = require("../../models/plant.js");
 const Moisture = require("../../models/Moisture.js");
 
+router.get('/', function(req, res, next) {
 async function accessDB() {
   const test = await Plant.findAll();
   let included = [];
@@ -24,12 +25,10 @@ async function accessDB() {
     //Create array for each plant
     included.push([test[i].dataValues.MAC, test[i].dataValues.name, test[i].dataValues.location, test[i].dataValues.id, readings]);
   }
-  router.get('/', function(req, res, next) {
-    res.json({ PLANTS: included });
-  });
+  res.json({ PLANTS: included });
 }
 accessDB();
-setInterval(accessDB, 5000); //Updates /data every 5 seconds
+});
 
 module.exports = function (app) {
   app.use('/data', router);
