@@ -1,9 +1,3 @@
-// Create div and add to webpage
-let div = document.createElement('div');
-div.classList.add('plant-list');
-let containerDiv = document.querySelector('.container');
-containerDiv.appendChild(div);
-
 // 1. create plant
 const addPlant = async (req, res) => {
   let name = document.getElementById('name').value;
@@ -22,7 +16,6 @@ const addPlant = async (req, res) => {
   })
 });
 }
-//addPlant();
 
 // Add event listener
 let submitBtn = document.getElementById('btn');

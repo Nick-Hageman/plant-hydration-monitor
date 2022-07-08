@@ -24,6 +24,7 @@
         </form>
       </div>
       <div id="div-container" class="container">
+        <div class="plant-list"></div>
       </div>
     </main>
     <script src="js/buttons.js"></script>
@@ -92,6 +93,7 @@
                         </div>
                     </div>`;
     
+    let div = document.querySelector('.plant-list');
     div.insertAdjacentHTML("beforeend", html);
     function updateScript() {
     var script = document.createElement('script');
