@@ -15,16 +15,30 @@ router.get('/', function(req, res, next) {
 */
 
 router.post('/', function(req, res, next) {
-  id = req.body.id;
-  //let moisture = getData();
-  //let img = document.getElementById('file-select').files[0].name;
-
-  Plant.destroy({
-    where: {
-        MAC: id
-    }
-  })
-  res.json({ message: 'SUCCESS'});
+  async function accessDB() {
+    id = req.body.id;
+    //let moisture = getData();
+    //let img = document.getElementById('file-select').files[0].name;
+    let plant_deleting = await Plant.findAll({
+      where : {
+        MAC : id
+      }
+    })
+    //Destroys all moisture values connected to the plant entry bring deleted
+    Moisture.destroy({
+      where: {
+          plantId: plant_deleting[0].dataValues.id
+      }
+    })
+    //Destroys the plant entry
+    Plant.destroy({
+      where: {
+          MAC: id
+      }
+    })
+    res.json({ message: 'SUCCESS'});
+  }
+  accessDB();
 });
 
 
