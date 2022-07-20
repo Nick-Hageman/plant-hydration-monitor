@@ -3,7 +3,7 @@ const express = require('express'),
 
 let saturation = 1023;
 module.exports = function (app) {
-  app.use('/saturation', router);
+  app.use('/arduinoReceiver', router);
 };
 
 // Page templates:

@@ -4,7 +4,7 @@ const addPlant = async (req, res) => {
   let location = document.getElementById('location').value;
   let id = document.getElementById('id').value;
   let img = document.getElementById('upload').files[0];
-  fetch('http://192.168.86.94:3000/plant', {
+  fetch('http://192.168.86.94:3000/createPlant', {
   method: "POST",
   headers: {
     Accept: "application/json",

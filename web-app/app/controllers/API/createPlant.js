@@ -1,24 +1,25 @@
 const express = require('express'),
   router = express.Router();
-const Plant = require("../../models/plant.js");
+const Plant = require("../../../models/plant.js");
 
 // Page templates:
 /**
  * Render the main page
  */
-let name1, location, id;
+let name1, location, id, img;
 router.get('/', function(req, res, next) {
-  res.json({ name1: name1, location: location, id: id });
+  res.json({ name1: name1, location: location, id: id, img: img }); //URL.createObjectURL(img)
 });
 
 router.post('/', function(req, res, next) {
   name1 = req.body.name;
   location = req.body.location;
   id = req.body.id;
+  img = req.body.img;
   //let moisture = getData();
   //let img = document.getElementById('file-select').files[0].name;
   async function plantEntry() {
-  let info = {name: name1, location: location, MAC: id}
+  let info = {name: name1, location: location, MAC: id, img: img}
   const plant = await Plant.create(info)
   console.log(plant)
   res.json({ message: 'SUCCESS'});
@@ -28,5 +29,5 @@ router.post('/', function(req, res, next) {
 
 
 module.exports = function (app) {
-    app.use('/plant', router);
+    app.use('/createPlant', router);
   };

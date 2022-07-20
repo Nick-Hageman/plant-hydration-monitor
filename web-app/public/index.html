@@ -46,7 +46,7 @@
   //  - connect sensor to plants (using id input)
   //  - display on screen
   function getvals(){
-    return fetch('http://192.168.86.94:3000/data',
+    return fetch('http://192.168.86.94:3000/activeData',
     {
       method: "GET",
       headers: {
@@ -99,7 +99,7 @@
     script.innerHTML = `
 //Function to retrive current readings from sensor
 function getvals(){
-  return fetch('http://192.168.86.94:3000/data',
+  return fetch('http://192.168.86.94:3000/activeData',
   {
     method: "GET",
     headers: {

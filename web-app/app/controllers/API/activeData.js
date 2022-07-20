@@ -1,7 +1,7 @@
 const express = require('express'),
   router = express.Router();
-const Plant = require("../../models/plant.js");
-const Moisture = require("../../models/Moisture.js");
+const Plant = require("../../../models/plant.js");
+const Moisture = require("../../../models/Moisture.js");
 
 router.get('/', function(req, res, next) {
 async function accessDB() {
@@ -31,5 +31,5 @@ accessDB();
 });
 
 module.exports = function (app) {
-  app.use('/data', router);
+  app.use('/activeData', router);
 };

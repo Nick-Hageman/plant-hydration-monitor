@@ -1,7 +1,7 @@
 const express = require('express'),
   router = express.Router();
-const Plant = require("../../models/plant.js");
-const sequelize = require("../../app.js");
+const Plant = require("../../../models/plant.js");
+const sequelize = require("../../../app.js");
 
 // Page templates:
 /**
