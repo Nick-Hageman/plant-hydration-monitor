@@ -14,12 +14,11 @@
     <main>
       <h2>Add Plant</h2>
       <div>
-        <form>
-          <label>Name: <input type="text" id="name" placeholder="Insert Plant Name.."></label>
-          <label>Location: <input type="text" id="location" placeholder="Insert Location.."></label>
-          <label>MAC: <input type="text" id="id" placeholder="Enter ID.."></label>
-          <label for="file-select">Upload Image:</label>
-          <input type="file" name="upload" id="file-select">
+        <form action= "http://192.168.86.94:3000/plant" method="POST" enctype="multipart/form-data">
+          <label>Name: <input type="text" id="name" name="name" placeholder="Insert Plant Name.."></label>
+          <label>Location: <input type="text" id="location" name="location" placeholder="Insert Location.."></label>
+          <label>MAC: <input type="text" id="id" name="id" placeholder="Enter ID.."></label>
+          <label for="upload">Upload Image: <input type="file" name="upload" id="upload"></label>
           <input type="button" value="Submit" id="btn">
         </form>
       </div>
@@ -47,7 +46,7 @@
   //  - connect sensor to plants (using id input)
   //  - display on screen
   function getvals(){
-    return fetch('http://192.168.86.82:3000/data',
+    return fetch('http://192.168.86.94:3000/data',
     {
       method: "GET",
       headers: {
@@ -100,7 +99,7 @@
     script.innerHTML = `
 //Function to retrive current readings from sensor
 function getvals(){
-  return fetch('http://192.168.86.82:3000/data',
+  return fetch('http://192.168.86.94:3000/data',
   {
     method: "GET",
     headers: {
@@ -165,10 +164,16 @@ const backgroundChartArea2 = {
 }
 
 const config = {
-  type: 'line',
+  type: 'scatter',
   data: data,
-  options: {scales: {
+  options: {
+    showLine: true,
+    scales: {
 x: {
+  beginAtZero: true,
+  min: 0,
+  max: 12,
+  reverse: true,
   title: {
     color: 'gray',
     display: true,
@@ -219,7 +224,7 @@ updateScript();
             //Xdiv.removeChild(removeEl);
             //Remove plant from Database
             id = (removeEl.children[1].children[2].textContent.split('ID: '));
-            fetch('http://192.168.86.82:3000/removePlant', {
+            fetch('http://192.168.86.94:3000/removePlant', {
             method: "POST",
             headers: {
               Accept: "application/json",

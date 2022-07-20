@@ -3,7 +3,8 @@ const addPlant = async (req, res) => {
   let name = document.getElementById('name').value;
   let location = document.getElementById('location').value;
   let id = document.getElementById('id').value;
-  fetch('http://192.168.86.82:3000/plant', {
+  let img = document.getElementById('upload').files[0];
+  fetch('http://192.168.86.94:3000/plant', {
   method: "POST",
   headers: {
     Accept: "application/json",
@@ -12,8 +13,9 @@ const addPlant = async (req, res) => {
   body: JSON.stringify({
     name: name,
     location: location,
-    id: id
-  })
+    id: id,
+    img: img
+  }) //Parse Json response
 });
 }
 
