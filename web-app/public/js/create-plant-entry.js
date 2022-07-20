@@ -1,3 +1,4 @@
+$(document).ready(function() { //Doesn't execute JS until page is ready
 // 1. create plant
 const addPlant = async (req, res) => {
   let name = document.getElementById('name').value;
@@ -20,5 +21,5 @@ const addPlant = async (req, res) => {
 }
 
 // Add event listener
-let submitBtn = document.getElementById('btn');
-submitBtn.addEventListener('click', addPlant); //Use this function to add entries to the database
+$("#btn").on("click", addPlant);
+});
